@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>3D Euclidean Distance Calculator</title>
+
+    <!-- Plotly for Interactive 3D Graph -->
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #111827,
+                    #020617 60%,
+                    #000000
+                );
+
+            color: white;
+
+        }
+
+
+        /* =========================
+           MAIN CONTAINER
+        ========================= */
+
+        .container {
+
+            width: 96%;
+
+            max-width: 1500px;
+
+            margin: auto;
+
+            padding: 25px 0 20px;
+
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+
+            text-align: center;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        header h1 {
+
+            margin: 0;
+
+            font-size:
+                clamp(30px, 4vw, 55px);
+
+            font-weight: 800;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #2196ff,
+                    #9b5cff,
+                    #22c55e
+                );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color:
+                transparent;
+
+        }
+
+
+        header p {
+
+            margin-top: 10px;
+
+            color: #cbd5e1;
+
+            font-size: 18px;
+
+        }
+
+
+        /* =========================
+           MAIN GRID
+        ========================= */
+
+        .main-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                470px 1fr;
+
+            gap: 18px;
+
+        }
+
+
+        /* =========================
+           CARD
+        ========================= */
+
+        .card {
+
+            background:
+                rgba(10, 18, 30, 0.88);
+
+            border:
+                1px solid #263449;
+
+            border-radius: 16px;
+
+            padding: 24px;
+
+            box-shadow:
+                0 10px 40px
+                rgba(0,0,0,0.35);
+
+        }
+
+
+        /* =========================
+           SECTION TITLE
+        ========================= */
+
+        .section-title {
+
+            font-size: 22px;
+
+            font-weight: 700;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .blue {
+            color: #2196ff;
+        }
+
+
+        .purple {
+            color: #b565ff;
+        }
+
+
+        .green {
+            color: #22c55e;
+        }
+
+
+        .yellow {
+            color: #ffd400;
+        }
+
+
+        /* =========================
+           INPUT GROUP
+        ========================= */
+
+        .point-section {
+
+            border-bottom:
+                1px solid #263449;
+
+            padding-bottom: 20px;
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .input-row {
+
+            display: grid;
+
+            grid-template-columns:
+                70px 1fr;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .input-row label {
+
+            color: #cbd5e1;
+
+            font-size: 16px;
+
+        }
+
+
+        input {
+
+            width: 100%;
+
+            padding: 12px;
+
+            background: #07111f;
+
+            border:
+                1px solid #334155;
+
+            border-radius: 7px;
+
+            color: white;
+
+            font-size: 16px;
+
+            outline: none;
+
+        }
+
+
+        input:focus {
+
+            border-color:
+                #2196ff;
+
+            box-shadow:
+                0 0 10px
+                rgba(33,150,255,0.25);
+
+        }
+
+
+        /* =========================
+           BUTTON
+        ========================= */
+
+        .calculate-btn {
+
+            width: 100%;
+
+            border: none;
+
+            border-radius: 9px;
+
+            padding: 15px;
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+            color: white;
+
+            cursor: pointer;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #1677ff,
+                    #22c55e
+                );
+
+            transition: 0.2s;
+
+        }
+
+
+        .calculate-btn:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 8px 25px
+                rgba(33,150,255,0.3);
+
+        }
+
+
+        /* =========================
+           DISTANCE RESULT
+        ========================= */
+
+        .distance-box {
+
+            margin-top: 18px;
+
+            border:
+                1px solid #263449;
+
+            border-radius: 14px;
+
+            padding: 20px;
+
+            background:
+                rgba(4,12,22,0.8);
+
+        }
+
+
+        .distance-label {
+
+            color: #dbeafe;
+
+            font-size: 16px;
+
+        }
+
+
+        .distance-value {
+
+            font-size: 44px;
+
+            font-weight: 800;
+
+            color: #22c55e;
+
+            margin:
+                5px 0 15px;
+
+        }
+
+
+        /* =========================
+           FORMULA
+        ========================= */
+
+        .formula {
+
+            line-height: 1.9;
+
+            font-size: 17px;
+
+            color: #e2e8f0;
+
+            overflow-x: auto;
+
+        }
+
+
+        .formula strong {
+
+            color: #ffd400;
+
+        }
+
+
+        /* =========================
+           GRAPH
+        ========================= */
+
+        .graph-card {
+
+            min-height: 600px;
+
+        }
+
+
+        #graph {
+
+            width: 100%;
+
+            height: 560px;
+
+        }
+
+
+        /* =========================
+           BOTTOM CARDS
+        ========================= */
+
+        .bottom-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 18px;
+
+            margin-top: 18px;
+
+        }
+
+
+        .bottom-card {
+
+            padding: 22px;
+
+            background:
+                rgba(10,18,30,0.9);
+
+            border:
+                1px solid #263449;
+
+            border-radius: 15px;
+
+        }
+
+
+        .bottom-card h2 {
+
+            margin-top: 0;
+
+            color: #2196ff;
+
+        }
+
+
+        .bottom-card p {
+
+            color: #cbd5e1;
+
+            line-height: 1.7;
+
+        }
+
+
+        .properties {
+
+            list-style: none;
+
+            padding: 0;
+
+        }
+
+
+        .properties li {
+
+            margin-bottom: 12px;
+
+            color: #dbeafe;
+
+        }
+
+
+        .properties li::before {
+
+            content: "✓";
+
+            color: #22c55e;
+
+            font-weight: bold;
+
+            margin-right: 10px;
+
+        }
+
+
+        /* =========================
+           FOOTER TIP
+        ========================= */
+
+        .tip {
+
+            margin-top: 18px;
+
+            text-align: center;
+
+            padding: 14px;
+
+            border:
+                1px solid #263449;
+
+            border-radius: 10px;
+
+            color: #cbd5e1;
+
+            background:
+                rgba(10,18,30,0.8);
+
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 1000px) {
+
+            .main-grid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .graph-card {
+
+                min-height: auto;
+
+            }
+
+
+            #graph {
+
+                height: 500px;
+
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .container {
+
+                width: 94%;
+
+            }
+
+
+            .card {
+
+                padding: 16px;
+
+            }
+
+
+            .bottom-grid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            #graph {
+
+                height: 400px;
+
+            }
+
+
+            .distance-value {
+
+                font-size: 36px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header>
+
+        <h1>
+            3D Euclidean Distance Calculator
+        </h1>
+
+        <p>
+            Calculate the straight-line distance
+            between two points in 3D space
+        </p>
+
+    </header>
+
+
+
+    <!-- =========================
+         MAIN GRID
+    ========================== -->
+
+    <div class="main-grid">
+
+
+        <!-- =====================
+             LEFT PANEL
+        ====================== -->
+
+        <div>
+
+
+            <!-- POINT A -->
+
+            <div class="card point-section">
+
+                <div class="section-title blue">
+
+                    1. Enter Point A
+                    <small>(x₁, y₁, z₁)</small>
+
+                </div>
+
+
+                <div class="input-row">
+
+                    <label>x₁:</label>
+
+                    <input
+                        id="x1"
+                        type="number"
+                        value="2"
+                        step="any"
+                    >
+
+                </div>
+
+
+                <div class="input-row">
+
+                    <label>y₁:</label>
+
+                    <input
+                        id="y1"
+                        type="number"
+                        value="3"
+                        step="any"
+                    >
+
+                </div>
+
+
+                <div class="input-row">
+
+                    <label>z₁:</label>
+
+                    <input
+                        id="z1"
+                        type="number"
+                        value="1"
+                        step="any"
+                    >
+
+                </div>
+
+            </div>
+
+
+
+            <!-- POINT B -->
+
+            <div class="card point-section">
+
+                <div class="section-title purple">
+
+                    2. Enter Point B
+                    <small>(x₂, y₂, z₂)</small>
+
+                </div>
+
+
+                <div class="input-row">
+
+                    <label>x₂:</label>
+
+                    <input
+                        id="x2"
+                        type="number"
+                        value="7"
+                        step="any"
+                    >
+
+                </div>
+
+
+                <div class="input-row">
+
+                    <label>y₂:</label>
+
+                    <input
+                        id="y2"
+                        type="number"
+                        value="6"
+                        step="any"
+                    >
+
+                </div>
+
+
+                <div class="input-row">
+
+                    <label>z₂:</label>
+
+                    <input
+                        id="z2"
+                        type="number"
+                        value="5"
+                        step="any"
+                    >
+
+                </div>
+
+
+                <button
+                    class="calculate-btn"
+                    onclick="calculateDistance()"
+                >
+
+                    🧮 Calculate Distance
+
+                </button>
+
+            </div>
+
+
+
+            <!-- RESULT -->
+
+            <div class="card">
+
+                <div class="section-title green">
+
+                    3. Distance Result
+
+                </div>
+
+
+                <div class="distance-box">
+
+                    <div class="distance-label">
+
+                        3D Euclidean Distance
+
+                    </div>
+
+
+                    <div
+                        id="distance"
+                        class="distance-value"
+                    >
+
+                        7.0711
+
+                    </div>
+
+
+                    <div
+                        id="formula"
+                        class="formula"
+                    >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =====================
+             3D GRAPH
+        ====================== -->
+
+        <div class="card graph-card">
+
+            <div class="section-title yellow">
+
+                4. 3D Visualization
+
+            </div>
+
+
+            <div id="graph"></div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         INFORMATION CARDS
+    ========================== -->
+
+    <div class="bottom-grid">
+
+
+        <div class="bottom-card">
+
+            <h2>
+                ℹ About
+            </h2>
+
+            <p>
+
+                Euclidean distance is the shortest
+                straight-line distance between two
+                points in 3D space.
+
+                <br><br>
+
+                It measures how far Point A is from
+                Point B using their X, Y and Z
+                coordinates.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="bottom-card">
+
+            <h2>
+                ⭐ Key Properties
+            </h2>
+
+
+            <ul class="properties">
+
+                <li>
+                    Always non-negative
+                </li>
+
+                <li>
+                    d(A,B) = d(B,A)
+                </li>
+
+                <li>
+                    d(A,A) = 0
+                </li>
+
+                <li>
+                    Works in any dimension
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         TIP
+    ========================== -->
+
+    <div class="tip">
+
+        💡 Change any value above and click
+        <strong>Calculate Distance</strong>
+        to update the 3D visualization.
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+/* =====================================================
+   GET INPUT VALUES
+===================================================== */
+
+function getValues() {
+
+    return {
+
+        x1: Number(
+            document.getElementById("x1").value
+        ),
+
+        y1: Number(
+            document.getElementById("y1").value
+        ),
+
+        z1: Number(
+            document.getElementById("z1").value
+        ),
+
+        x2: Number(
+            document.getElementById("x2").value
+        ),
+
+        y2: Number(
+            document.getElementById("y2").value
+        ),
+
+        z2: Number(
+            document.getElementById("z2").value
+        )
+
+    };
+
+}
+
+
+/* =====================================================
+   CALCULATE EUCLIDEAN DISTANCE
+===================================================== */
+
+function calculateDistance() {
+
+
+    const values =
+        getValues();
+
+
+    const dx =
+        values.x2 -
+        values.x1;
+
+
+    const dy =
+        values.y2 -
+        values.y1;
+
+
+    const dz =
+        values.z2 -
+        values.z1;
+
+
+    /*
+        3D Euclidean Distance
+
+        d = √[(x2-x1)² + (y2-y1)² + (z2-z1)²]
+    */
+
+    const distance =
+        Math.sqrt(
+            dx * dx +
+            dy * dy +
+            dz * dz
+        );
+
+
+    /* =========================
+       DISPLAY RESULT
+    ========================== */
+
+    document.getElementById(
+        "distance"
+    ).textContent =
+        distance.toFixed(4);
+
+
+    /* =========================
+       DISPLAY FORMULA
+    ========================== */
+
+    document.getElementById(
+        "formula"
+    ).innerHTML = `
+
+        <strong>
+            d(A,B)
+        </strong>
+
+        =
+        √[(x₂ − x₁)² +
+        (y₂ − y₁)² +
+        (z₂ − z₁)²]
+
+        <br>
+
+        =
+        √[(${values.x2} − ${values.x1})²
+        +
+        (${values.y2} − ${values.y1})²
+        +
+        (${values.z2} − ${values.z1})²]
+
+        <br>
+
+        =
+        √[(${dx})² +
+        (${dy})² +
+        (${dz})²]
+
+        <br>
+
+        =
+        √[
+        ${dx * dx}
+        +
+        ${dy * dy}
+        +
+        ${dz * dz}
+        ]
+
+        <br>
+
+        =
+        <strong>
+            ${distance.toFixed(4)}
+        </strong>
+
+    `;
+
+
+    /* =========================
+       UPDATE GRAPH
+    ========================== */
+
+    drawGraph(values);
+
+}
+
+
+/* =====================================================
+   DRAW 3D GRAPH
+===================================================== */
+
+function drawGraph(v) {
+
+
+    /* =========================
+       POINT A
+    ========================== */
+
+    const pointA = {
+
+        x: [v.x1],
+
+        y: [v.y1],
+
+        z: [v.z1],
+
+        mode: "markers+text",
+
+        type: "scatter3d",
+
+        name: "Point A",
+
+        text: [
+            `A (${v.x1}, ${v.y1}, ${v.z1})`
+        ],
+
+        textposition: "top center",
+
+        textfont: {
+
+            color: "#2196ff",
+
+            size: 16
+
+        },
+
+        marker: {
+
+            size: 10,
+
+            color: "#2196ff",
+
+            line: {
+
+                color: "white",
+
+                width: 1
+
+            }
+
+        }
+
+    };
+
+
+
+    /* =========================
+       POINT B
+    ========================== */
+
+    const pointB = {
+
+        x: [v.x2],
+
+        y: [v.y2],
+
+        z: [v.z2],
+
+        mode: "markers+text",
+
+        type: "scatter3d",
+
+        name: "Point B",
+
+        text: [
+            `B (${v.x2}, ${v.y2}, ${v.z2})`
+        ],
+
+        textposition: "top center",
+
+        textfont: {
+
+            color: "#b565ff",
+
+            size: 16
+
+        },
+
+        marker: {
+
+            size: 10,
+
+            color: "#b565ff",
+
+            line: {
+
+                color: "white",
+
+                width: 1
+
+            }
+
+        }
+
+    };
+
+
+
+    /* =========================
+       DISTANCE LINE
+    ========================== */
+
+    const distanceLine = {
+
+        x: [
+            v.x1,
+            v.x2
+        ],
+
+        y: [
+            v.y1,
+            v.y2
+        ],
+
+        z: [
+            v.z1,
+            v.z2
+        ],
+
+        mode: "lines",
+
+        type: "scatter3d",
+
+        name: "Euclidean Distance",
+
+        line: {
+
+            color: "#ffd400",
+
+            width: 8
+
+        }
+
+    };
+
+
+
+    /* =========================
+       PROJECTION LINE A
+    ========================== */
+
+    const projectionA = {
+
+        x: [
+            v.x1,
+            v.x1
+        ],
+
+        y: [
+            v.y1,
+            v.y1
+        ],
+
+        z: [
+            0,
+            v.z1
+        ],
+
+        mode: "lines",
+
+        type: "scatter3d",
+
+        name: "A Projection",
+
+        line: {
+
+            color: "#2196ff",
+
+            width: 4,
+
+            dash: "dash"
+
+        },
+
+        showlegend: false
+
+    };
+
+
+
+    /* =========================
+       PROJECTION LINE B
+    ========================== */
+
+    const projectionB = {
+
+        x: [
+            v.x2,
+            v.x2
+        ],
+
+        y: [
+            v.y2,
+            v.y2
+        ],
+
+        z: [
+            0,
+            v.z2
+        ],
+
+        mode: "lines",
+
+        type: "scatter3d",
+
+        name: "B Projection",
+
+        line: {
+
+            color: "#b565ff",
+
+            width: 4,
+
+            dash: "dash"
+
+        },
+
+        showlegend: false
+
+    };
+
+
+
+    /* =========================
+       GRAPH LAYOUT
+    ========================== */
+
+    const layout = {
+
+        paper_bgcolor:
+            "rgba(0,0,0,0)",
+
+        plot_bgcolor:
+            "rgba(0,0,0,0)",
+
+        margin: {
+
+            l: 0,
+
+            r: 0,
+
+            t: 0,
+
+            b: 0
+
+        },
+
+
+        scene: {
+
+            bgcolor:
+                "rgba(0,0,0,0)",
+
+
+            xaxis: {
+
+                title: "X",
+
+                color: "#ff3333",
+
+                gridcolor: "#334155",
+
+                zerolinecolor: "#ff3333",
+
+                showbackground: false
+
+            },
+
+
+            yaxis: {
+
+                title: "Y",
+
+                color: "#22c55e",
+
+                gridcolor: "#334155",
+
+                zerolinecolor: "#22c55e",
+
+                showbackground: false
+
+            },
+
+
+            zaxis: {
+
+                title: "Z",
+
+                color: "#2196ff",
+
+                gridcolor: "#334155",
+
+                zerolinecolor: "#2196ff",
+
+                showbackground: false
+
+            },
+
+
+            camera: {
+
+                eye: {
+
+                    x: 1.5,
+
+                    y: 1.5,
+
+                    z: 1.2
+
+                }
+
+            }
+
+        },
+
+
+        legend: {
+
+            font: {
+
+                color: "white"
+
+            }
+
+        }
+
+    };
+
+
+
+    /* =========================
+       DRAW
+    ========================== */
+
+    Plotly.react(
+
+        "graph",
+
+        [
+
+            pointA,
+
+            pointB,
+
+            distanceLine,
+
+            projectionA,
+
+            projectionB
+
+        ],
+
+        layout,
+
+        {
+
+            responsive: true,
+
+            displaylogo: false,
+
+            modeBarButtonsToRemove: [
+
+                "lasso3d",
+
+                "select3d"
+
+            ]
+
+        }
+
+    );
+
+}
+
+
+/* =====================================================
+   LIVE CALCULATION
+===================================================== */
+
+const inputs =
+    document.querySelectorAll(
+        "input"
+    );
+
+
+inputs.forEach(
+    input => {
+
+        input.addEventListener(
+            "input",
+            calculateDistance
+        );
+
+    }
+);
+
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+
+calculateDistance();
+
+</script>
+
+
+</body>
+
+</html>
